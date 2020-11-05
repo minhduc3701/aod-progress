@@ -1,24 +1,60 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import "./App.css";
+import { Toggle } from "aod-dependencies/Toggle";
+import { initializeIcons } from "aod-dependencies/@uifabric/icons";
+import { Wrapper } from "./AppStyle";
+import CustomProgressIndicator from "aod-dependencies/ProgressIndicator/CustomProgressIndicator";
+
+initializeIcons();
+
+const intervalDelay = 100;
+const intervalIncrement = 0.01;
 
 function App() {
+  const [darkMode, setDarkMode] = React.useState<string>("");
+  const [percentComplete, setPercentComplete] = React.useState(0);
+
+  React.useEffect(() => {
+    const id = setInterval(() => {
+      setPercentComplete((intervalIncrement + percentComplete) % 1);
+    }, intervalDelay);
+    return () => {
+      clearInterval(id);
+    };
+  });
+  const onChangeMode = () => {
+    if (darkMode === "dark") {
+      setDarkMode("light");
+    }
+    if (darkMode !== "dark") {
+      setDarkMode("dark");
+    }
+  };
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Wrapper theme={darkMode}>
+        <div className="toggle-wrapper">
+          <Toggle label="Dark mode" onChange={onChangeMode} />
+        </div>
+        <CustomProgressIndicator
+          label="Example title"
+          description="Example description"
+          title="Example"
+          // <ProgressIndicatorDarkMode>
+          darkMode={darkMode}
+          // </ProgressIndicatorDarkMode>
+          percentComplete={percentComplete}
+        />
+        <CustomProgressIndicator
+          label="Example title 2"
+          description="Example description 2"
+          title="Example"
+          // <ProgressIndicatorDarkMode>
+          darkMode={darkMode}
+          // </ProgressIndicatorDarkMode>
+          // percentComplete={percentComplete}
+        />
+      </Wrapper>
     </div>
   );
 }
